@@ -4,3 +4,5 @@ subjects/**/exercise.html
 subjects/**/solution.html
 !subjects/**/backbone-todomvc/index.html
 node_modules
+
+package-lock.json

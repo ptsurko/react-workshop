@@ -29,23 +29,45 @@ import PropTypes from 'prop-types'
 
 class RadioGroup extends React.Component {
   static propTypes = {
-    defaultValue: PropTypes.string
+    defaultValue: PropTypes.string,
+  }
+
+  state = {
+    value: this.props.defaultValue
   }
 
   render() {
-    return <div>{this.props.children}</div>
+    return <div>
+      {React.Children.map(this.props.children, child => {
+        if (child.type === RadioOption) {
+          return React.cloneElement(child, {
+            selected: child.props.value === this.state.value,
+            onSelect: () => {
+              this.setState({
+                value: child.props.value
+              })
+            }
+          })
+        } else {
+          return child
+        }
+      })}
+    </div>
   }
 }
 
 class RadioOption extends React.Component {
   static propTypes = {
-    value: PropTypes.string
+    value: PropTypes.string,
+    selected: PropTypes.bool,
+    onSelect: PropTypes.func
   }
 
   render() {
+    const { selected, children } = this.props
     return (
-      <div>
-        <RadioIcon isSelected={false}/> {this.props.children}
+      <div onClick={() => this.props.onSelect()}>
+        <RadioIcon isSelected={selected}/>&nbsp;{children}
       </div>
     )
   }
@@ -78,7 +100,7 @@ class App extends React.Component {
   render() {
     return (
       <div>
-        <h1>♬ It's about time that we all turned off the radio ♫</h1>
+        <div>♬ It's about time that we all turned off the radio ♫</div>
 
         <RadioGroup defaultValue="fm">
           <RadioOption value="am">AM</RadioOption>
