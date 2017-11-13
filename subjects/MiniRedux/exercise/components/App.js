@@ -1,14 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import connect from '../mini-redux/connect'
+import { counterSelector, doubleCounterSelector } from './../reducers/counter'
 
 class App extends React.Component {
   increment = () => {
-    this.props.dispatch({ type: 'INCREMENT' })
+    this.props.increment()
   }
 
   decrement = () => {
-    this.props.dispatch({ type: 'DECREMENT' })
+    this.props.decrement()
   }
 
   render() {
@@ -17,6 +18,7 @@ class App extends React.Component {
         <h1>Mini Redux!</h1>
         <button onClick={this.increment}>Increment</button>{' '}
         {this.props.counter}{' '}
+        {this.props.doubleCounter}{' '}
         <button onClick={this.decrement}>Decrement</button>
       </div>
     )
@@ -24,7 +26,17 @@ class App extends React.Component {
 }
 
 const mapStateToProps = (state) => {
-  return { counter: state }
+  return {
+    counter: counterSelector(state),
+    doubleCounter: doubleCounterSelector(state)
+  }
 }
 
-export default connect(mapStateToProps)(App)
+const mapDispatchToProps = (dispatch) => {
+  return {
+    increment: () => dispatch({ type: 'INCREMENT' }),
+    decrement: () => dispatch({ type: 'DECREMENT' })
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App)

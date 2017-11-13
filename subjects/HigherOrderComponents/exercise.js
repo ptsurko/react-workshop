@@ -15,8 +15,43 @@ import ReactDOM from 'react-dom'
 import PropTypes from 'prop-types'
 import * as styles from './styles'
 
+function getDisplayName(WrappedComponent) {
+  return WrappedComponent.displayName ||
+         WrappedComponent.name ||
+         'Component'
+}
+
 const withMouse = (Component) => {
-  return Component
+  return class extends React.Component {
+    static displayName = `WithMouse${getDisplayName(Component)}`
+
+    state = { mouse: { x: 0, y: 0 } }
+
+    componentDidMount() {
+      this.el.addEventListener('mousemove', this.handleMouseMove)
+    }
+
+    componentWillUnmount() {
+      this.el.removeEventListener('mousemove', this.handleMouseMove)
+    }
+
+    handleMouseMove = ({ x, y }) => {
+      this.setState({
+        mouse: {
+          x,
+          y
+        }
+      })
+    }
+
+    render() {
+      return (
+        <div ref={(el) => this.el = el}>
+          <Component {...this.state} {...this.props}/>
+        </div>
+      )
+    }
+  }
 }
 
 class App extends React.Component {

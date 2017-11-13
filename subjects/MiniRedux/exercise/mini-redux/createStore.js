@@ -1,22 +1,24 @@
 const createStore = (reducer) => {
-  let state = reducer(undefined, { type: '@INIT' })
+  let state
   let listeners = []
 
-  const getState = () =>
-    state
-
+  const getState = () => {
+    return state
+  }
   const dispatch = (action) => {
     state = reducer(state, action)
-    listeners.forEach(listener => listener())
-  }
 
+    listeners.forEach(l => l())
+  }
   const subscribe = (listener) => {
     listeners.push(listener)
 
     return () => {
-      listeners = listeners.filter(item => item !== listener)
+      listeners = listeners.filter(l => l !== listener)
     }
   }
+
+  dispatch({ type: '@INIT' })
 
   return {
     getState,

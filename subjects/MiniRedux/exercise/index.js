@@ -19,21 +19,17 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 import createStore from './mini-redux/createStore'
+import combineReducers from './mini-redux/combineReducers'
 import Provider from './mini-redux/Provider'
+import counter from './reducers/counter'
 import App from './components/App'
 
-const store = createStore((state = 0, action) => {
-  if (action.type === 'INCREMENT') {
-    return state + 1
-  } else if (action.type === 'DECREMENT') {
-    return state - 1
-  } else {
-    return state
-  }
-})
+const store = createStore(combineReducers({
+  counter
+}))
 
 ReactDOM.render((
   <Provider store={store}>
-    <App/>
+    <App dispatch={store.dispatch}/>
   </Provider>
 ), document.getElementById('app'))
